@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "baseUrl": ".",                             // ✅ required for path aliases
+    "paths": {
+      "@/*": ["./*"],
+      "@/app-components/*": ["app/components/*"],  // ✅ components inside app/
+      "@/components/*": ["components/*"],          // ✅ components outside app/
+      "@/app/*": ["app/*"]                         // optional: for other app imports
+    },
+    "plugins": [
+      { "name": "next" }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",              // ✅ include JS files too (since you're using JSX)
+    "**/*.jsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
