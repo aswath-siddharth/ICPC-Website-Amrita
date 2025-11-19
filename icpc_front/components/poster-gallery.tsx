@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { X, Share2, Download, Copy } from "lucide-react"
+import { X, Share2, Download, Copy, FileText } from "lucide-react"
 import { FaWhatsapp, FaLinkedin, FaTwitter, FaShare } from "react-icons/fa"
 
 
@@ -123,6 +123,8 @@ export default function PosterGallery() {
     const [selectedPoster, setSelectedPoster] = useState<Poster | null>(null)
     const [copied, setCopied] = useState(false)
     const [copying, setCopying] = useState(false)
+    const [copiedPosterId, setCopiedPosterId] = useState<number | null>(null)
+    const [copyingPosterId, setCopyingPosterId] = useState<number | null>(null)
 
     // Sort posters based on selected option
     const sortedPosters = [...samplePosters].sort((a, b) => {
@@ -492,210 +494,126 @@ The first phase of the world's biggest and oldest coding competition is here –
 		}
 	}
 
-	return (
-		<div className="w-full">
-			{/* Sort Dropdown */}
-			<div className="flex justify-end mb-6">
-				<Select value={sortBy} onValueChange={(value: SortOption) => setSortBy(value)}>
-					<SelectTrigger className="w-48">
-						<SelectValue placeholder="Sort by date" />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="newest">Newest First</SelectItem>
-						<SelectItem value="oldest">Oldest First</SelectItem>
-					</SelectContent>
-				</Select>
-			</div>
+    // Copy promotional text only
+    const copyPromotionalText = async (posterId: number) => {
+        try {
+            const text = `🚀 Get Ready, Coders!
+The first phase of the world's biggest and oldest coding competition is here – ICPC Asia West Amritapuri site 2025! 🎉
 
-			{/* Poster Grid */}
-			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-				{sortedPosters.map((poster) => (
-					<Card
-						key={poster.id}
-						className="group cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105"
-						onClick={() => setSelectedPoster(poster)}
-					>
-						<div className="relative h-64">
-							<Image
-								src={poster.imageUrl || "/placeholder.svg"}
-								alt={poster.title}
-								fill
-								className="object-cover transition-transform duration-300 group-hover:scale-110"
-								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-								priority={poster.id <= 4} // Prioritize first 4 images
-								placeholder="blur"
-								blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-							/>
-							<div className="absolute bottom-2 right-2 bg-black/70 rounded-full w-8 h-8 flex items-center justify-center">
-								<FaShare
-									className="text-white"
-									size={16}
-								/>
-							</div>
-						</div>
-						<div className="p-4">
-							<p className="text-sm text-muted-foreground">
-								{poster.date.toLocaleDateString("en-US", {
-									year: "numeric",
-									month: "long",
-									day: "numeric",
-								})}
-							</p>
-						</div>
-					</Card>
-				))}
-			</div>
+🔥 With 350+ onsite slots, this is your golden chance to battle it out and feel the adrenaline of the regionals on your way to the World Finals.
 
-			{/* Social Share Modal */}
-			{selectedPoster && (
-				<div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-					<div className="bg-card rounded-lg p-6 w-full max-w-md relative">
-						<Button
-							variant="ghost"
-							size="icon"
-							className="absolute top-2 right-2"
-							onClick={() => setSelectedPoster(null)}
-						>
-							<X size={20} />
-						</Button>
+💡 Why you shouldn't miss this:
+✅ Compete with the best coding minds across the country
+✅ Sharpen your problem-solving & algorithmic skills
+✅ Unlock internship & career opportunities with top tech firms
 
-						<div className="text-center mb-6">
-							<div className="relative w-32 h-40 mx-auto mb-4">
-								<Image
-									src={selectedPoster.imageUrl || "/placeholder.svg"}
-									alt={selectedPoster.title}
-									fill
-									className="object-cover rounded-lg"
-									sizes="128px"
-								/>
-							</div>
-							<p className="text-muted-foreground text-sm">Share this poster</p>
-							{copying && (
-                                <p className="text-xs text-blue-600 mt-2">Copying image...</p>
-                            )}
-                            {copied && (
-                                <p className="text-xs text-green-600 mt-2">
-                                </p>
-                            )}
-						</div>
+👉 Register today and choose Amritapuri as your regionals site!
+🔗 https://amritaicpc.in/
 
-						{/* Mobile: Web Share API */}
-						{navigator.share && isMobile() ? (
-							<div className="flex flex-col gap-4">
-								<Button
-									className="flex items-center justify-center gap-2 h-12"
-									onClick={() => shareWithWebAPI(selectedPoster)}
-								>
-									<Share2 className="w-5 h-5" />
-									Share
-								</Button>
-								  <Button
-                variant="outline"
-                className="flex flex-col items-center justify-center gap-1 h-20 p-2"
-                onClick={() => shareToOtherAppsMobile(selectedPoster)}
-                disabled={copying}
-            >
-                <Copy className="w-6 h-6 text-gray-600" />
-                <span className="text-xs">Copy Promotional Text</span>
-                {copied && !copying && <span className="text-xs text-green-600">Copied!</span>}
-            </Button>
-								<Button
-									variant="outline"
-									className="flex items-center justify-center gap-2 h-12"
-									onClick={() => downloadImage(selectedPoster)}
-								>
-									<Download className="w-5 h-5" />
-									Download Only
-								</Button>
-								<p className="text-xs text-muted-foreground mt-2 text-center">
-									{copied 
-										? 'Now paste in your social media app!' 
-										: 'Copy the text, share the poster, and paste the promo text on social media.'
-									}
-								</p>
-							</div>
-						) : (
-							/* Desktop: Smart Copy + Share */
-							<>
-								{/* Copy to Clipboard Section */}
-								{/* <div className="mb-6">
-									<Button
-										variant="outline"
-										className={`w-full flex items-center justify-center gap-2 h-12 transition-colors ${
-											copied 
-												? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400' 
-												: copying
-												? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400'
-												: 'hover:bg-gray-50 dark:hover:bg-gray-800'
-										}`}
-										onClick={() => copyImageToClipboard(selectedPoster)}
-										disabled={copying}
-									>
-										<Copy className="w-5 h-5" />
-										{copying ? 'Copying...' : copied ? 'Copied to Clipboard!' : 'Copy Image & Text'}
-									</Button>
-									<p className="text-xs text-muted-foreground mt-2 text-center">
-										{copied 
-											? 'Now paste in your social media app!' 
-											: 'Copy image & text, then paste in any social media app'
-										}
-									</p>
-								</div> */}
+⏳ Don't wait — the journey to the ICPC Finals starts here!`
 
-								{/* Smart Social Media Options */}
-								<div className="grid grid-cols-2 gap-4">
-									<Button
-										variant="outline"
-										className="flex items-center justify-center gap-2 h-12 bg-transparent hover:bg-green-50 dark:hover:bg-green-900/20"
-										onClick={() => copyAndShareWhatsApp(selectedPoster)}
-										disabled={copying}
-									>
-										<FaWhatsapp className="w-5 h-5 text-green-500" />
-										{copying ? 'Copying...' : 'WhatsApp'}
-									</Button>
+            await navigator.clipboard.writeText(text)
+            setCopiedPosterId(posterId)
+            setTimeout(() => setCopiedPosterId(null), 2000)
+        } catch (error) {
+            console.error('Error copying text:', error)
+        }
+    }
 
-									<Button
-										variant="outline"
-										className="flex items-center justify-center gap-2 h-12 bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20"
-										onClick={() => copyAndShareLinkedIn(selectedPoster)}
-										disabled={copying}
-									>
-										<FaLinkedin className="w-5 h-5 text-blue-600" />
-										{copying ? 'Copying...' : 'LinkedIn'}
-									</Button>
+    return (
+        <div className="w-full">
+            {/* Sort Dropdown */}
+            <div className="flex justify-end mb-6">
+                <Select value={sortBy} onValueChange={(value: SortOption) => setSortBy(value)}>
+                    <SelectTrigger className="w-48">
+                        <SelectValue placeholder="Sort by date" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="newest">Newest First</SelectItem>
+                        <SelectItem value="oldest">Oldest First</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
 
-									<Button
-										variant="outline"
-										className="flex items-center justify-center gap-2 h-12 bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20"
-										onClick={() => copyAndShareTwitter(selectedPoster)}
-										disabled={copying}
-									>
-										<FaTwitter className="w-5 h-5 text-blue-400" />
-										{copying ? 'Copying...' : 'Twitter'}
-									</Button>
-
-									<Button
-										variant="outline"
-										className="flex items-center justify-center gap-2 h-12 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800"
-										onClick={() => downloadImage(selectedPoster)}
-									>
-										<Download className="w-5 h-5 text-gray-600" />
-										Download Only
-									</Button>
-								</div>
-
-								{/* Instructions */}
-								<div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                                    <p className="text-xs text-blue-700 dark:text-blue-300 text-center">
-                                        💡 Click social media buttons to copy image + open app, then paste (Ctrl+V)
-                                    </p>
-                                </div>
-							</>
-						)}
-					</div>
-				</div>
-			)}
-		</div>
-	)
+            {/* Poster Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {sortedPosters.map((poster) => (
+                    <Card
+                        key={poster.id}
+                        className="group overflow-hidden transition-all duration-300 hover:shadow-lg flex flex-col"
+                    >
+                        <div className="relative h-64">
+                            <Image
+                                src={poster.imageUrl || "/placeholder.svg"}
+                                alt={poster.title}
+                                fill
+                                className="object-cover transition-transform duration-300 group-hover:scale-110"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                                priority={poster.id <= 4}
+                                placeholder="blur"
+                                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                            />
+                        </div>
+                        <div className="p-4 flex-1 flex flex-col">
+                            <p className="text-sm text-muted-foreground mb-3">
+                                {poster.date.toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                })}
+                            </p>
+                            {/* Share/Copy/Download Buttons */}
+                            <div className="flex flex-wrap gap-2 mb-3">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    title="Copy Promotional Text"
+                                    onClick={() => copyPromotionalText(poster.id)}
+                                    className={`flex items-center gap-1 ${copiedPosterId === poster.id ? 'bg-green-50 border-green-200 text-green-700' : ''}`}
+                                >
+                                    <span>
+                                        {copiedPosterId === poster.id ? "Copied!" : "Copy Text"}
+                                    </span>
+                                    {copiedPosterId === poster.id ? <FileText className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    title="WhatsApp"
+                                    onClick={() => copyAndShareWhatsApp(poster)}
+                                >
+                                    <FaWhatsapp className="w-4 h-4 text-green-500" />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    title="LinkedIn"
+                                    onClick={() => copyAndShareLinkedIn(poster)}
+                                >
+                                    <FaLinkedin className="w-4 h-4 text-blue-600" />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    title="Twitter"
+                                    onClick={() => copyAndShareTwitter(poster)}
+                                >
+                                    <FaTwitter className="w-4 h-4 text-blue-400" />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    title="Download"
+                                    onClick={() => downloadImage(poster)}
+                                >
+                                    <Download className="w-4 h-4 text-gray-600" />
+                                </Button>
+                            </div>
+                        </div>
+                    </Card>
+                ))}
+            </div>
+        </div>
+    )
 }
 

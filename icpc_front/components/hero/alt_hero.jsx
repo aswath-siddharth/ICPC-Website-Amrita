@@ -1,174 +1,232 @@
 'use client';
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react"; 
 
 export default function AltHero() {
-    const IMAGE_PATH = '/coursel_images/';
-    const IMAGE_COUNT = 5;
-    const IMAGE_EXTENSION = '.jpg';
-    
-    // Generate images array dynamically
-    const images = Array.from({ length: IMAGE_COUNT }, (_, index) => ({
-        id: String(index + 1),
-        src: `${IMAGE_PATH}${index + 1}${IMAGE_EXTENSION}`,
-        alt: `ICPC 2025 Regionals - Image ${index + 1}`
-    }));
+    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-    // Auto-change images every 4 seconds
     useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentImageIndex((prevIndex) => 
-                prevIndex === images.length - 1 ? 0 : prevIndex + 1
-            );
-        }, 4000);
+        const prelimsDate = new Date('2025-11-08T13:30:00').getTime();
+        
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const distance = prelimsDate - now;
 
+            if (distance > 0) {
+                setTimeLeft({
+                    days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+                    hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                    minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+                    seconds: Math.floor((distance % (1000 * 60)) / 1000)
+                });
+            } else {
+                setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+            }
+        };
+
+        updateCountdown();
+        const interval = setInterval(updateCountdown, 1000);
         return () => clearInterval(interval);
-    }, [images.length]);
 
-    const goToImage = (index) => {
-        setCurrentImageIndex(index);
-    };
+    }, []);
 
     return (
-        <div className="relative w-full min-h-[85vh] lg:min-h-[80vh] overflow-hidden -mt-[5vw] md:-mt-[5vw] max-md:-mt-[15vw]">
-            {/* Background Image Carousel with Auto-Change */}
-            <div className="absolute inset-0 w-full h-full">
-                {images.length > 0 ? (
-                    <>
-                        {/* Image Container */}
-                        <div className="relative w-full h-full">
-                            {images.map((image, index) => (
-                                <div
-                                    key={image.id}
-                                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                                        index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-                                    }`}
-                                >
-                                    <Image
-                                        src={image.src}
-                                        alt={image.alt}
-                                        fill
-                                        className="object-cover"
-                                        priority={index === 0}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                        
-                        {/* Navigation Dots - positioned above content with better spacing */}
-                        <div className="absolute bottom-6 sm:bottom-8 md:bottom-12 lg:bottom-16 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-                            {images.map((image, index) => (
-                                <button
-                                    key={image.id}
-                                    onClick={() => goToImage(index)}
-                                    className={`w-5 h-1 rounded-full transition-all duration-300 shadow-lg border-2 border-white/20
-                                        ${index === currentImageIndex 
-                                            ? 'bg-white/70 scale-110' 
-                                            : 'bg-white/30 hover:bg-white/50'
-                                        }`}
-                                />
-                            ))}
-                        </div>
-                    </>
-                ) : (
-                    <div className="flex items-center justify-center w-full h-full bg-gray-200">
-                        <p className="text-gray-500">Loading images...</p>
-                    </div>
-                )}
-            </div>
-
-            {/* Dark Overlay for better text readability */}
-            <div className="absolute inset-0 bg-black/40 z-5"></div>
+        <div className="relative w-full min-h-screen bg-white overflow-hidden">
             
-            {/* Main Content Container with improved padding */}
-            <div className="relative z-10 flex flex-col justify-center items-center w-full h-full min-h-[85vh] lg:min-h-[80vh] px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 pt-20 sm:pt-24 md:pt-28 lg:pt-20 pb-24 sm:pb-28 md:pb-32 lg:pb-36">
+            {/* Main Container */}
+            <div className="flex flex-col lg:flex-row min-h-screen pt-20 sm:pt-24 md:pt-28 lg:pt-24 xl:pt-20 max-w-7xl mx-auto gap-x-8">
                 
-                {/* Text Content */}
-                <div className="flex flex-col justify-center items-center text-center max-w-3xl">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold text-white mb-3 sm:mb-4 md:mb-6 leading-tight tracking-tighter">
-                        ICPC 2025 Regionals
+                {/* Left Section */}
+                <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-16 xl:px-8 py-4 sm:py-6 lg:py-20">
+                    
+                    {/* Highlight */}
+                    <div className="mb-3 sm:mb-4 md:mb-6">
+                        <span className="inline-block bg-blue-50 text-blue-700 text-xs sm:text-sm font-medium px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-blue-200">
+                            highlights: 320+ on-site slots !
+                        </span>
+                    </div>
+
+                    {/* Title */}
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-2 sm:mb-3 md:mb-4 leading-tight">
+                        ICPC 2025<br />
+                        <span className="text-blue-600">AMRITAPURI REGIONALS</span>
                     </h1>
                     
-                    <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-white font-medium mb-2 sm:mb-2 md:mb-3">
-                        <Link href={'/reach-us/bengaluru'} className="hover:text-blue-300 transition-colors duration-300">
-                            Bengaluru
-                        </Link> | <Link href={'/reach-us/coimbatore'} className="hover:text-blue-300 transition-colors duration-300">
-                            Coimbatore
-                        </Link> | <Link href={'/reach-us/amritapuri'} className="hover:text-blue-300 transition-colors duration-300">
-                            Kollam
-                        </Link> | <span className="hover:text-blue-300 transition-colors duration-300">
-                            Mysuru
-                        </span>
+                    {/* Locations */}
+                    <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 font-medium mb-4 sm:mb-6 md:mb-8 leading-relaxed">
+                        <Link href={'/reach-us/bengaluru'} className="hover:text-blue-600 transition-colors duration-300">Bengaluru</Link> , 
+                        <Link href={'/reach-us/coimbatore'} className="hover:text-blue-600 transition-colors duration-300"> Coimbatore</Link> ,  
+                        <Link href={'/reach-us/amritapuri'} className="hover:text-blue-600 transition-colors duration-300"> Kollam</Link> ,  
+                        <span className="hover:text-blue-600 transition-colors duration-300"> Mysuru</span>
                     </p>
-                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-white pb-3">
-                        ~350+ Onsite Slots Available 
-                    </p>
-                    
-                    <Link
-                        href="https://icpc.global/regionals/finder/Asia-Amritapuri-First-Round-2026"
-                        className="bg-blue-500 hover:bg-blue-600 text-white text-sm sm:text-base md:text-lg lg:text-xl py-2 sm:py-3 md:py-4 lg:py-5 px-5 sm:px-6 md:px-8 lg:px-10 rounded-md transition duration-300 ease-in-out transform hover:scale-105 shadow-lg hover:shadow-xl"
-                    >
-                        Registration Open
-                    </Link>
-                    
-                    {/* Timeline */}
-                    <div className="mt-6 flex flex-wrap justify-center gap-x-4 sm:gap-x-6 gap-y-3 text-center">
-                        <div className="px-3 py-2 rounded-xl text-white text-sm sm:text-base md:text-lg font-semibold">
-                            <span className="block text-white">8 OCT</span>
-                            <span>Registration Ends</span>
-                        </div> 
-                        <div className="px-3 py-2 rounded-xl text-white text-sm sm:text-base md:text-lg font-semibold">
-                            <span className="block text-white">11 OCT</span>
-                            <span>Online Prelims</span>
-                        </div>
-                        <div className="px-3 py-2 rounded-xl text-white text-sm sm:text-base md:text-lg font-semibold">
-                            <span className="block text-white">2–3 JAN</span>
-                            <span>Onsite Regionals</span>
-                        </div>
+
+                    {/* Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8 md:mb-12">
+                        <Link
+                            href="https://icpc.global/regionals/finder/Asia-Amritapuri-First-Round-2026"
+                            className="bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-lg transition duration-300 hover:scale-105 shadow-lg text-center"
+                        >
+                            Register Now
+                        </Link>
+
+                        <Link
+                            href="/data/Declaration_form.pdf"
+                            download
+                            className="bg-blue-600 hover:bg-blue-700 text-white border-2 border-blue-600 text-sm sm:text-base font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-lg transition duration-300 hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                            College Declaration Form
+                        </Link>
                     </div>
 
-                    {/* Sponsored by section with improved spacing */}
-                    <div className="mt-8 sm:mt-10 md:mt-12 flex flex-col items-center">
-                        <p className="text-white/80 text-xs sm:text-sm font-medium mb-4 uppercase tracking-wider">
-                            Sponsored by
-                        </p>
-                        <div className="flex items-start gap-6 sm:gap-8">
-                            <div className="flex flex-col items-center">
-                                <div className="h-10 sm:h-8 md:h-14 flex items-center justify-center mb-2">
-                                    <Image
-                                        src="/janestreet_white2.png"
-                                        alt="Jane Street"
-                                        width={100}
-                                        height={40}
-                                        className="h-full w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
-                                    />
-                                </div>
-                                <p className="text-white text-xs sm:text-xs md:text-sm text-center font-light">
-                                    ICPC Titanium Multi-Regional Sponsor
+                    {/* Countdown + Downloads */}
+                    <div className="mb-6 sm:mb-8 border-t border-gray-200 pt-6">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 sm:gap-10">
+
+                        {/* Countdown */}
+                        <div>
+                          <p className="text-gray-600 text-xs sm:text-sm font-medium mb-2">Prelims starts in:</p>
+                          <div className="flex gap-1 sm:gap-2 items-center">
+                            <div className="flex flex-col items-center bg-blue-100/50 rounded-lg px-3 py-2 min-w-[55px] shadow-sm">
+                              <span className="text-2xl font-bold text-blue-600 leading-none">{timeLeft.days}</span>
+                              <span className="text-[10px] text-gray-600 font-medium mt-1">Days</span>
+                            </div>
+                            <div className="flex flex-col items-center bg-blue-100/50 rounded-lg px-3 py-2 min-w-[55px] shadow-sm">
+                              <span className="text-2xl font-bold text-blue-600 leading-none">{timeLeft.hours}</span>
+                              <span className="text-[10px] text-gray-600 font-medium mt-1">Hrs</span>
+                            </div>
+                            <div className="flex flex-col items-center bg-blue-100/50 rounded-lg px-3 py-2 min-w-[55px] shadow-sm">
+                              <span className="text-2xl font-bold text-blue-600 leading-none">{timeLeft.minutes}</span>
+                              <span className="text-[10px] text-gray-600 font-medium mt-1">Mins</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="hidden sm:block w-px bg-gray-200 h-16"></div>
+
+                        {/* Download Buttons — UPDATED */}
+                        <div>
+                          <p className="text-gray-600 text-xs sm:text-sm font-medium mb-2">
+                            Download important documents:
+                          </p>
+
+                          <div className="grid grid-cols-2 gap-3 w-full max-w-sm">
+
+  {[
+    { title: "FAQ", link: "/data/FAQ ICPC_V2.0.pdf" },
+    { title: "Rules", link: "/data/ICPC_Contest_Guidelines_V2.0.pdf" },
+    { title: "Selection Process", link: "/data/Onsite selction Process 2025_V 2.1.pdf" },
+    { title: "OBS Setup Guide", link: "/data/OBS Setup Guide for ICPC Proctoring - V2.pdf" },
+  ].map((doc, i) => (
+    <a
+      key={i}
+      href={doc.link}
+      download
+      className="
+        px-4 py-3
+        flex items-center gap-2
+        text-blue-700 font-semibold text-sm
+        border border-blue-300
+        rounded-xl
+        hover:bg-blue-600 hover:text-white hover:border-blue-600
+        transition-all
+      "
+    >
+      {/* Download Icon */}
+      <svg xmlns="http://www.w3.org/2000/svg" 
+        fill="none" viewBox="0 0 24 24" 
+        strokeWidth="2" stroke="currentColor"
+        className="w-5 h-5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+      </svg>
+
+      {doc.title}
+    </a>
+  ))}
+
+</div>
+
+                        </div>
+
+                      </div>
+                    </div>
+
+                    {/* Sponsors */}
+                    <div className="mb-4 sm:mb-6 md:mb-8">
+                        <p className="text-gray-500 text-xs sm:text-sm font-medium mb-2 uppercase tracking-wider">Sponsored By</p>
+                        <div className="flex items-start gap-4 sm:gap-6 md:gap-8">
+                            <div className="flex flex-col items-start">
+                                <Image src="/jane2.png" alt="Jane Street" width={100} height={35} className="h-full w-auto mb-1" />
+                                <p className="text-gray-600 text-[10px] sm:text-xs font-medium leading-tight">
+                                    ICPC Titanium Multi-<br />Regional Sponsor
                                 </p>
                             </div>
 
-                            <div className="flex flex-col items-center">
-                                <div className="h-10 sm:h-8 md:h-14 flex items-center justify-center mb-2">
-                                    <Image
-                                        src="/JetBrains_white_logo.svg"
-                                        alt="JetBrains"
-                                        width={60}
-                                        height={30}
-                                        className="h-3/4 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
-                                    />
-                                </div>
-                                <p className="text-white text-xs sm:text-xs md:text-sm text-center font-light">
-                                    ICPC Global Sponsor Programming Tools
+                            <div className="flex flex-col items-start">
+                                <Image src="/jetbrains_logo.svg" alt="JetBrains" width={70} height={25} className="h-3/4 w-auto mb-1" />
+                                <p className="text-gray-600 text-[10px] sm:text-xs font-medium leading-tight">
+                                    ICPC Global Sponsor<br />Programming Tools
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                {/* Right Image */}
+                <div className="flex-1 relative min-h-[280px] sm:min-h-[350px] md:min-h-[450px] lg:min-h-screen mt-4 sm:mt-6 lg:mt-0 flex items-center justify-center px-4 lg:px-8">
+                    <div className="relative w-full max-w-lg lg:max-w-xl">
+                        <svg className="absolute -top-[999px] -left-[999px] w-0 h-0">
+                            <defs>
+                                <clipPath id="clip-main-image" clipPathUnits={'objectBoundingBox'}>
+                                    <path d='M0.0998072 1H0.422076H0.749756C0.767072 1 0.774207 0.961783 0.77561 0.942675V0.807325C0.777053 0.743631 0.791844 0.731953 0.799059 0.734076H0.969813C0.996268 0.730255 1.00088 0.693206 0.999875 0.675159V0.0700637C0.999875 0.0254777 0.985045 0.00477707 0.977629 0H0.902473C0.854975 0 0.890448 0.138535 0.850165 0.138535H0.0204424C0.00408849 0.142357 0 0.180467 0 0.199045V0.410828C0 0.449045 0.0136283 0.46603 0.0204424 0.469745H0.0523086C0.0696245 0.471019 0.0735527 0.497877 0.0733523 0.511146V0.915605C0.0723903 0.983121 0.090588 1 0.0998072 1Z'/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+
+                        <figure style={{ clipPath: 'url(#clip-main-image)' }} className="w-full aspect-[3/4] relative">
+                            <Image
+                                src="/coursel_images/2.jpg"
+                                alt="ICPC 2025 Regionals"
+                                fill
+                                className="object-cover transition-all duration-300 hover:scale-105"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                quality={100}
+                                priority
+                                unoptimized
+                            />
+                        </figure>
+                    </div>
+                </div>
             </div>
+
+            {/* Timeline */}
+            <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6">
+                    <div className="flex justify-center items-center gap-4 sm:gap-8 md:gap-12 lg:gap-16">
+                        
+                        <div className="text-center">
+                            <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900">31 OCT</div>
+                            <div className="text-[10px] sm:text-xs md:text-sm text-gray-600">Registration Ends</div>
+                        </div>
+                        
+                        <div className="text-center">
+                            <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900">8 NOV</div>
+                            <div className="text-[10px] sm:text-xs md:text-sm text-gray-600">Online Prelims</div>
+                        </div>
+                        
+                        <div className="text-center">
+                            <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900">2-3 JAN</div>
+                            <div className="text-[10px] sm:text-xs md:text-sm text-gray-600">Onsite Regionals</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
-    )
+    );
 }

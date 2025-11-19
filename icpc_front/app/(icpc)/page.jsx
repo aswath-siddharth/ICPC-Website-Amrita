@@ -4,21 +4,24 @@ import AboutAmrita from "@/components/about/amrita_vv2";
 import AltHero from "@/components/hero/alt_hero";
 import ExclusivePerks2 from "@/components/about/perks_2";
 import WhatsICPC from "@/components/about/icpc";
-import OutreachPartners from "@/components/tables/partners";
 import Sponsors from "@/components/tables/sponsors";
 import Faq from "@/components/tables/faq";
 import WebinarBanner from "@/components/tables/webinarbanner";
+import WebinarSection from "@/components/tables/past-sessions";
+import PartnerSupport from "@/components/tables/why_sponsor_us";
 export default function Trial(){
     return(
         <div className="min-h-[100vh]">
             {/* <Hero/> */}
             <AltHero/>
-            <WebinarBanner/>
+            {/* <WebinarBanner/> */}
             <WhatsICPC/>
             <WhyParticipate/>
             <ExclusivePerks2/>
+            <PartnerSupport />
             <div className="pt-[8vw] bg-white">
                 <HowToRegister/>
+                <WebinarSection/>
                 <Sponsors/>
                 {/* <OutreachPartners/> */}
                 <Faq/>          {/* Moved FAQ before AboutAmrita */}
